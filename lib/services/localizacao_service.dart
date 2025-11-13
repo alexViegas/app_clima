@@ -1,11 +1,14 @@
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+
 class LocalizacaoService {
   Future<String?> obterCidadeAtual() async {
-    bool servicoAtivo = await Geolocator.isLocationServiceEnable();
+    bool servicoAtivo = await Geolocator.isLocationServiceEnabled();
     if (!servicoAtivo) {
       throw Exception('Serviço de localização desativado');
     }
 
-    LocationPermission permissao = await Geolicator.checkPermission();
+    LocationPermission permissao = await Geolocator.checkPermission();
     if (permissao == LocationPermission.denied) {
       permissao = await Geolocator.requestPermission();
       if (permissao == LocationPermission.denied) {
@@ -18,5 +21,16 @@ class LocalizacaoService {
     }
 
     //Coordenadas
+    Position posicao = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+
+    //Converter coordenada para nome da cidade
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+      posicao.latitude,
+      posicao.longitude,
+    );
+
+    return placemarks.first.locality;
   }
 }

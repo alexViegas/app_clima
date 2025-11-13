@@ -24,6 +24,18 @@ class _HomeViewState extends State<HomeView> {
         title: const Text('App de Clima'),
         actions: [
           IconButton(
+            icon: const Icon(Icons.my_location),
+            tooltip: 'Usar minha localização atual',
+            onPressed: () async {
+              await climaVM.buscarClimaAtual();
+              if (climaVM.erro != null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Erro: ${climaVM.erro}')),
+                );
+              }
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.star_border),
             tooltip: 'Favoritos',
             onPressed: () {

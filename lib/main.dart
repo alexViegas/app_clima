@@ -5,8 +5,15 @@ import 'viewmodels/favoritos_view_model.dart';
 import 'views/home_view.dart';
 
 void main() {
-  runApp(
-    MultiProvider(
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ClimaViewModel()),
         ChangeNotifierProvider(create: (_) => FavoritosViewModel()),
@@ -15,6 +22,6 @@ void main() {
         debugShowCheckedModeBanner: false,
         home: HomeView(),
       ),
-    ),
-  );
+    );
+  }
 }
