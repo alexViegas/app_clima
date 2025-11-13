@@ -31,6 +31,29 @@ class LocalizacaoService {
       posicao.longitude,
     );
 
-    return placemarks.first.locality;
+    return placemarks.first.locality?.trim();
+  }
+
+  Future<Position?> obterPosicaoAtual() async {
+    bool servicoAtivo = await Geolocator.isLocationServiceEnabled();
+    if (!servicoAtivo) {
+      throw Exception('Serviço de localização desativado');
+    }
+
+    LocationPermission permissao = await Geolocator.checkPermission();
+    if (permissao == LocationPermission.denied) {
+      permissao = await Geolocator.requestPermission();
+      if (permissao == LocationPermission.denied) {
+        throw Exception('Permissão negada');
+      }
+    }
+
+    if (permissao == LocationPermission.deniedForever) {
+      throw Exception('Permissão permanente negada');
+    }
+
+    return await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
   }
 }

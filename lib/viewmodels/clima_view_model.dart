@@ -72,17 +72,25 @@ class ClimaViewModel extends ChangeNotifier {
       erro = null;
       notifyListeners();
 
-      final cidade = await _localizacaoService.obterCidadeAtual();
-      if (cidade == null) {
-        erro = 'Não foi possível determinar sua cidade.';
+      // Obtém a localização atual (latitude/longitude)
+      final posicao = await _localizacaoService.obterPosicaoAtual();
+
+      if (posicao == null) {
+        erro = 'Não foi possível determinar sua localização.';
         carregando = false;
         notifyListeners();
         return;
       }
 
-      previsao = await _service.buscarClima(cidade);
-    } catch (e) {
-      erro = e.toString();
+      // Busca o clima pelas coordenadas
+      previsao = await _service.buscarClimaPorCoordenadas(
+        posicao.latitude,
+        posicao.longitude,
+      );
+    } catch (e, stack) {
+      erro = 'Erro detalhado: $e';
+      print('>>> Erro ao buscar clima atual: $e');
+      print(stack);
     } finally {
       carregando = false;
       notifyListeners();

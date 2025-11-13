@@ -18,4 +18,20 @@ class ClimaService {
       throw Exception("Erro ao buscar clima");
     }
   }
+
+  Future<PrevisaoClima> buscarClimaPorCoordenadas(
+    double latitude,
+    double longitude,
+  ) async {
+    final url = Uri.parse(
+      "https://api.openweathermap.org/data/2.5/weather?lat=$latitude&lon=$longitude&appid=$apiKey&units=metric&lang=pt_br",
+    );
+
+    final resposta = await http.get(url);
+    if (resposta.statusCode == 200) {
+      return PrevisaoClima.fromJson(jsonDecode(resposta.body));
+    } else {
+      throw Exception("Erro ao buscar clima");
+    }
+  }
 }
